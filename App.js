@@ -1,20 +1,47 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { useState } from "react";
+import { Text, StatusBar, View, StyleSheet, Pressable } from "react-native";
+import Constants from "expo-constants";
+import MainView from "./viewModel/MainView/Views/MainView";
+import BottomNavigationBar from "./viewModel/MainView/Views/BottomNavigationBar";
+import CalendarView from "./viewModel/MainView/Views/CalendarView";
+import AddHabitView from "./viewModel/MainView/Views/AddHabitView";
+// Redux
+import { Provider } from "react-redux";
+import configureStore from "./store/store";
 
 export default function App() {
+  const [tabNumber, setTabNumber] = useState(0);
+  const changeTab = (tabNumber) => {
+    if (tabNumber == 0) {
+      return <MainView />;
+    }
+    if (tabNumber == 1) {
+      return <AddHabitView setTabNumber={setTabNumber} />;
+    }
+    if (tabNumber == 2) {
+      return <CalendarView />;
+    }
+  };
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <Provider store={configureStore}>
+      <View style={styles.container}>
+        {changeTab(tabNumber)}
+
+        <BottomNavigationBar
+          setTabNumber={setTabNumber}
+          tabNumber={tabNumber}
+        />
+      </View>
+    </Provider>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    paddingTop: Constants.statusBarHeight,
+    backgroundColor: "#fff",
+    width: "100%",
+    height: "100%",
   },
 });
